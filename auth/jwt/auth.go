@@ -29,7 +29,7 @@ func NewAuth(client *redis.Client) *service {
 type AccessDetails struct {
 	TokenUuid string
 	UserId    string
-	ProfileId string
+	UserType  string
 }
 
 type TokenDetails struct {
@@ -42,12 +42,12 @@ type TokenDetails struct {
 }
 
 // CreateAuth Save token metadata to Redis
-func (tk *service) CreateAuth(userId string, profileId string, td *TokenDetails) error {
+func (tk *service) CreateAuth(userId string, userType string, td *TokenDetails) error {
 	at := time.Unix(td.AtExpires, 0) //converting Unix to UTC(to Time object)
 	rt := time.Unix(td.RtExpires, 0)
 	now := time.Now()
 
-	objectUserProfile, _ := json.Marshal(&TokenPayload{UserID: userId, ProfileID: profileId})
+	objectUserProfile, _ := json.Marshal(&TokenPayload{UserID: userId, UserType: userType})
 
 	atCreated, err := tk.client.Set(td.TokenUuid, objectUserProfile, at.Sub(now)).Result()
 	if err != nil {
