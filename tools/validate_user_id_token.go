@@ -40,8 +40,8 @@ func (t *Tools) ValidateDataIDToken(c *gin.Context, NameID string, ValueID int, 
 		if ID, _ := strconv.Atoi(tokenUserID.UserID); ID != ValueID {
 			return false
 		}
-	case "profile_id":
-		if ID, _ := strconv.Atoi(tokenUserID.ProfileID); ID != ValueID {
+	case "user_type":
+		if ID, _ := strconv.Atoi(tokenUserID.UserType); ID != ValueID {
 			return false
 		}
 	}

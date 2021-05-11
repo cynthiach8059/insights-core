@@ -1,7 +1,7 @@
 package jwt
 
 type TokenPayload struct {
-	UserID    string `json:"user_id"`
-	ProfileID string `json:"profile_id"`
-	UUID      string `json:"-"`
+	UserID   string `json:"user_id"`
+	UserType string `json:"user_type"`
+	UUID     string `json:"-"`
 }

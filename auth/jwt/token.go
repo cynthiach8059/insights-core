@@ -19,14 +19,14 @@ func NewToken() *tokenservice {
 }
 
 type TokenInterface interface {
-	CreateToken(userId string, profileId string) (*TokenDetails, error)
+	CreateToken(userId string, userType string) (*TokenDetails, error)
 	ExtractTokenMetadata(*http.Request) (*AccessDetails, error)
 }
 
 //Token implements the TokenInterface
 var _ TokenInterface = &tokenservice{}
 
-func (t *tokenservice) CreateToken(userId string, profileId string) (*TokenDetails, error) {
+func (t *tokenservice) CreateToken(userId string, userType string) (*TokenDetails, error) {
 	td := &TokenDetails{}
 	td.AtExpires = time.Now().Add(time.Hour * 24).Unix() //expires after 24 hours
 	td.TokenUuid = uuid.NewV4().String()
@@ -39,7 +39,7 @@ func (t *tokenservice) CreateToken(userId string, profileId string) (*TokenDetai
 	atClaims := jwt.MapClaims{}
 	atClaims["access_uuid"] = td.TokenUuid
 	atClaims["user_id"] = userId
-	atClaims["profile_id"] = profileId
+	atClaims["user_type"] = userType
 	atClaims["exp"] = td.AtExpires
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
 	td.AccessToken, err = at.SignedString([]byte(os.Getenv("ACCESS_SECRET")))
@@ -54,7 +54,7 @@ func (t *tokenservice) CreateToken(userId string, profileId string) (*TokenDetai
 	rtClaims := jwt.MapClaims{}
 	rtClaims["refresh_uuid"] = td.RefreshUuid
 	rtClaims["user_id"] = userId
-	rtClaims["profile_id"] = profileId
+	rtClaims["user_type"] = userType
 	rtClaims["exp"] = td.RtExpires
 	rt := jwt.NewWithClaims(jwt.SigningMethodHS256, rtClaims)
 
@@ -106,14 +106,14 @@ func extract(token *jwt.Token) (*AccessDetails, error) {
 	if ok && token.Valid {
 		accessUuid, ok := claims["access_uuid"].(string)
 		userId, userOk := claims["user_id"].(string)
-		profileId, profileOk := claims["profile_id"].(string)
-		if ok == false || userOk == false || profileOk == false {
+		userType, userTypeOk := claims["user_type"].(string)
+		if ok == false || userOk == false || userTypeOk == false {
 			return nil, errors.New("unauthorized")
 		} else {
 			return &AccessDetails{
 				TokenUuid: accessUuid,
 				UserId:    userId,
-				ProfileId: profileId,
+				UserType:  userType,
 			}, nil
 		}
 	}
