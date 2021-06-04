@@ -1,16 +1,14 @@
 package tools
 
 import (
-	"os"
-	"strconv"
-
 	auth "bitbucket.org/edgelabsolutions/insights-core/auth/jwt"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 )
 
-func (t *Tools) ValidateDataIDToken(c *gin.Context, NameID string, ValueID int, rd auth.AuthInterface, tk auth.TokenInterface) bool {
+func (t *Tools) ValidateDataIDToken(c *gin.Context, name string, value string, rd auth.AuthInterface, tk auth.TokenInterface) bool {
 	// CHECK DATA FROM JWT
 	metadata, err := tk.ExtractTokenMetadata(c.Request)
 	if err != nil {
@@ -31,20 +29,20 @@ func (t *Tools) ValidateDataIDToken(c *gin.Context, NameID string, ValueID int, 
 	}
 
 	log.WithFields(log.Fields{
-		"valueId":     ValueID,
-		"tokenUserId": tokenUserID,
+		"user_type": tokenUserID.UserType,
+		"userId": tokenUserID.UserID,
 	}).Infof("user verification")
 
-	switch NameID {
+	switch name {
 	case "user_id":
-		if ID, _ := strconv.Atoi(tokenUserID.UserID); ID != ValueID {
-			return false
+		if tokenUserID.UserID == value {
+			return true
 		}
 	case "user_type":
-		if ID, _ := strconv.Atoi(tokenUserID.UserType); ID != ValueID {
-			return false
+		if tokenUserID.UserType == value {
+			return true
 		}
 	}
 
-	return true
+	return false
 }
