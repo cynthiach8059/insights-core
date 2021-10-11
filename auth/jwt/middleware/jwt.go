@@ -3,7 +3,7 @@ package middleware
 import (
 	"net/http"
 
-	auth "bitbucket.org/edgelabsolutions/insights-core/auth/jwt"
+	auth "github.com/cynthiach8059/insights-core/auth/jwt"
 	"github.com/gin-gonic/gin"
 )
 

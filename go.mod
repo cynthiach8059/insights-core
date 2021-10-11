@@ -1,4 +1,4 @@
-module bitbucket.org/edgelabsolutions/insights-core
+module github.com/cynthiach8059/insights-core
 
 go 1.14
 

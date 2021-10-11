@@ -1,7 +1,7 @@
 package tools
 
 import (
-	auth "bitbucket.org/edgelabsolutions/insights-core/auth/jwt"
+	auth "github.com/cynthiach8059/insights-core/auth/jwt"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
