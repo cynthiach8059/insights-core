@@ -28,10 +28,10 @@ var _ TokenInterface = &tokenservice{}
 
 func (t *tokenservice) CreateToken(userId string, userType string) (*TokenDetails, error) {
 	td := &TokenDetails{}
-	td.AtExpires = time.Now().Add(time.Hour * 168).Unix() //expires after 72 hours
+	td.AtExpires = time.Now().Add(time.Hour * 1000).Unix() //expires after 1000 hours
 	td.TokenUuid = uuid.NewV4().String()
 
-	td.RtExpires = time.Now().Add(time.Hour * 168 * 7).Unix()
+	td.RtExpires = time.Now().Add(time.Hour * 1000 * 7).Unix()
 	td.RefreshUuid = td.TokenUuid + "++" + userId
 
 	var err error
